@@ -21,7 +21,7 @@ public class NettyServer {
         EventLoopGroup group = new NioEventLoopGroup();
         try {
             ServerBootstrap b = new ServerBootstrap();
-            NettyServerHandler serverHandler = new NettyServerHandler();
+            final NettyServerHandler serverHandler = new NettyServerHandler();
 
             b.group(group).channel(NioServerSocketChannel.class)
                     .localAddress(Constant.DEFAULT_PORT)
