@@ -1,4 +1,4 @@
-package com.hjrpc.basic.server;
+package com.hjrpc.httpserver.server;
 
 import com.hjrpc.constant.Constant;
 import io.netty.bootstrap.ServerBootstrap;
@@ -8,6 +8,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
 
 public class NettyServer {
 
@@ -27,6 +29,8 @@ public class NettyServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) {
+                            ch.pipeline().addLast(new HttpServerCodec());
+                            ch.pipeline().addLast(new HttpObjectAggregator(10*1024*1024));
                             ch.pipeline().addLast(serverHandler);
                         }
                     });

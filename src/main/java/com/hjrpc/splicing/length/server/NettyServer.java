@@ -1,13 +1,20 @@
-package com.hjrpc.basic.server;
+package com.hjrpc.splicing.length.server;
 
 import com.hjrpc.constant.Constant;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
+
+import java.io.UnsupportedEncodingException;
 
 public class NettyServer {
 
@@ -26,7 +33,10 @@ public class NettyServer {
                     .localAddress(Constant.DEFAULT_PORT)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        protected void initChannel(SocketChannel ch) {
+                        protected void initChannel(SocketChannel ch) throws UnsupportedEncodingException {
+                            ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(65535,
+                                    0,2,0,2));
+                            ch.pipeline().addLast(new LengthFieldPrepender(2));
                             ch.pipeline().addLast(serverHandler);
                         }
                     });
