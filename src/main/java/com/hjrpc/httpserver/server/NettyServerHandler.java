@@ -26,20 +26,20 @@ public class NettyServerHandler  extends ChannelInboundHandlerAdapter {
                 HttpResponseStatus.OK,Unpooled.copiedBuffer(message.getBytes(CharsetUtil.UTF_8)));
         fullHttpResponse.headers().set(HttpHeaderNames.CONTENT_TYPE,
                 "text/plain;charset=UTF-8");
-        ctx.write(fullHttpResponse);
         System.out.println(count.incrementAndGet());
+        ctx.writeAndFlush(fullHttpResponse).addListener(ChannelFutureListener.CLOSE);
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        ctx.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
+//        ctx.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
     }
 
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
-        ctx.close();
+//        ctx.close();
     }
 
 
